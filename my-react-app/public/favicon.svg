@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- Black square key background -->
-  <rect x="6" y="6" width="20" height="20" rx="2" ry="2" fill="#000000" stroke="#ffffff" stroke-width="1"/>
+  <!-- Black square background -->
+  <rect x="0" y="0" width="32" height="32" rx="4" ry="4" fill="#000000"/>
   
   <!-- Number "1" in white -->
-  <text x="16" y="22" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="#ffffff">1</text>
+  <text x="16" y="24" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#ffffff">1</text>
 </svg>
