@@ -1,0 +1,184 @@
+/* Custom CSS for UselessDatePickerMinimal component */
+
+.min-h-screen { min-height: 100vh; }
+.w-full { width: 100%; }
+.bg-black { background-color: #000000; }
+.text-white { color: #ffffff; }
+.relative { position: relative; }
+.select-none { user-select: none; }
+
+.fixed { position: fixed; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+.pointer-events-none { pointer-events: none; }
+.pointer-events-auto { pointer-events: auto; }
+.absolute { position: absolute; }
+
+.grid { display: grid; }
+.place-items-center { place-items: center; }
+.flex { display: flex; }
+.items-center { align-items: center; }
+.gap-6 { gap: 1.5rem; }
+.gap-2 { gap: 0.5rem; }
+
+.w-12 { width: 3rem; }
+.h-12 { height: 3rem; }
+.h-14 { height: 3.5rem; }
+.rounded-xl { border-radius: 0.75rem; }
+.border { border-width: 1px; }
+.border-neutral-800 { border-color: #262626; }
+.border-neutral-800\/70 { border-color: rgba(38, 38, 38, 0.7); }
+.bg-black\/60 { background-color: rgba(0, 0, 0, 0.6); }
+.bg-neutral-900 { background-color: #171717; }
+.font-mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace; }
+.text-2xl { font-size: 1.5rem; line-height: 2rem; }
+.text-neutral-400 { color: #a3a3a3; }
+.text-neutral-200 { color: #e5e5e5; }
+.font-semibold { font-weight: 600; }
+.cursor-grab { cursor: grab; }
+.cursor-grabbing { cursor: grabbing; }
+
+.bottom-3 { bottom: 0.75rem; }
+.left-1\/2 { left: 50%; }
+.-translate-x-1\/2 { transform: translateX(-50%); }
+.text-neutral-700 { color: #404040; }
+.text-xs { font-size: 0.75rem; line-height: 1rem; }
+.tracking-widest { letter-spacing: 0.1em; }
+
+.top-3 { top: 0.75rem; }
+.right-3 { right: 0.75rem; }
+.text-\[10px\] { font-size: 10px; }
+.uppercase { text-transform: uppercase; }
+.text-neutral-400 { color: #a3a3a3; }
+
+.px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+.py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+.rounded-md { border-radius: 0.375rem; }
+.bg-neutral-900 { background-color: #171717; }
+.text-neutral-300 { color: #d4d4d4; }
+.hover\:text-white:hover { color: #ffffff; }
+
+.shadow-\[inset_0_1px_0_rgba\(255\,255\,255\,0\.04\)\,0_10px_20px_rgba\(0\,0\,0\,0\.5\)\] {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Main container */
+.main-container {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  position: relative;
+  user-select: none;
+}
+
+/* Floating tokens container */
+.floating-tokens-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+/* Individual floating token */
+.floating-token {
+  position: absolute;
+  pointer-events: auto;
+  animation: float var(--dur, 10s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* Drop slot styling with dashed border stroke */
+.drop-slot {
+  width: 3rem;
+  height: 3rem;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: grid;
+  place-items: center;
+  font-size: 1.875rem;
+  font-weight: 600;
+  color: #e5e5e5;
+  transition: all 0.2s ease;
+}
+
+.drop-slot:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.drop-slot:focus-within {
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #000000;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #000000;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
