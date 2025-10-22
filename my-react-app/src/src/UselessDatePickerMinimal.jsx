@@ -101,36 +101,74 @@ export default function UselessDatePickerMinimal() {
       return num >= 1 && num <= 31;
     }
 
-    // Month rules with cascading validation
+    // Month validation with proper combination checking
     const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
     
-    // 3rd position (first letter): Only allow letters that start valid months
-    if (slotIndex === 2) {
-      const first = token.char.toUpperCase();
-      return MONTHS.some(month => month.startsWith(first));
-    }
-    
-    // 4th position (second letter): Only allow letters that work with the first letter
-    if (slotIndex === 3) {
-      const m1 = slots[2].value ? slots[2].value.toUpperCase() : "";
-      if (!m1) return false; // Must have first letter
+    // Helper function to get valid letters for each position based on current state
+    function getValidLettersForPosition(pos, currentValues) {
+      const [m1, m2, m3] = currentValues;
       
-      const second = token.char.toUpperCase();
-      // Find all months that start with m1, then check if second letter is valid
-      const validMonths = MONTHS.filter(month => month.startsWith(m1));
-      return validMonths.some(month => month[1] === second);
+      if (pos === 2) { // First position
+        if (m2 && m3) {
+          // If we have 2nd and 3rd letters, find months that end with m2+m3
+          return MONTHS.filter(month => month[1] === m2 && month[2] === m3).map(month => month[0]);
+        } else if (m2) {
+          // If we have 2nd letter, find months that have m2 in 2nd position
+          return MONTHS.filter(month => month[1] === m2).map(month => month[0]);
+        } else if (m3) {
+          // If we have 3rd letter, find months that have m3 in 3rd position
+          return MONTHS.filter(month => month[2] === m3).map(month => month[0]);
+        } else {
+          // No other letters, return all possible first letters
+          return [...new Set(MONTHS.map(month => month[0]))];
+        }
+      }
+      
+      if (pos === 3) { // Second position
+        if (m1 && m3) {
+          // If we have 1st and 3rd letters, find months that start with m1 and end with m3
+          return MONTHS.filter(month => month[0] === m1 && month[2] === m3).map(month => month[1]);
+        } else if (m1) {
+          // If we have 1st letter, find months that start with m1
+          return MONTHS.filter(month => month[0] === m1).map(month => month[1]);
+        } else if (m3) {
+          // If we have 3rd letter, find months that end with m3
+          return MONTHS.filter(month => month[2] === m3).map(month => month[1]);
+        } else {
+          // No other letters, return all possible second letters
+          return [...new Set(MONTHS.map(month => month[1]))];
+        }
+      }
+      
+      if (pos === 4) { // Third position
+        if (m1 && m2) {
+          // If we have 1st and 2nd letters, find months that start with m1+m2
+          return MONTHS.filter(month => month[0] === m1 && month[1] === m2).map(month => month[2]);
+        } else if (m1) {
+          // If we have 1st letter, find months that start with m1
+          return MONTHS.filter(month => month[0] === m1).map(month => month[2]);
+        } else if (m2) {
+          // If we have 2nd letter, find months that have m2 in 2nd position
+          return MONTHS.filter(month => month[1] === m2).map(month => month[2]);
+        } else {
+          // No other letters, return all possible third letters
+          return [...new Set(MONTHS.map(month => month[2]))];
+        }
+      }
+      
+      return [];
     }
     
-    // 5th position (third letter): Only allow letters that complete the month
-    if (slotIndex === 4) {
+    // Validate month positions
+    if (slotIndex >= 2 && slotIndex <= 4) {
       const m1 = slots[2].value ? slots[2].value.toUpperCase() : "";
       const m2 = slots[3].value ? slots[3].value.toUpperCase() : "";
-      if (!m1 || !m2) return false; // Must have first two letters
+      const m3 = slots[4].value ? slots[4].value.toUpperCase() : "";
       
-      const third = token.char.toUpperCase();
-      // Check if the complete month is valid
-      const completeMonth = m1 + m2 + third;
-      return MONTHS.includes(completeMonth);
+      const validLetters = getValidLettersForPosition(slotIndex, [m1, m2, m3]);
+      const char = token.char.toUpperCase();
+      
+      return validLetters.includes(char);
     }
 
     // Year rules (<= 2999)
