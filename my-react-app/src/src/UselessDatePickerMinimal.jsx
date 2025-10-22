@@ -101,25 +101,36 @@ export default function UselessDatePickerMinimal() {
       return num >= 1 && num <= 31;
     }
 
-    // Month rules (must form one of JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC)
+    // Month rules with cascading validation
     const MONTHS = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+    
+    // 3rd position (first letter): Only allow letters that start valid months
     if (slotIndex === 2) {
       const first = token.char.toUpperCase();
-      // Only J F M A S O N D may be first
-      return new Set(["J","F","M","A","S","O","N","D"]).has(first);
+      return MONTHS.some(month => month.startsWith(first));
     }
+    
+    // 4th position (second letter): Only allow letters that work with the first letter
     if (slotIndex === 3) {
-      const m1 = (slots[2].value || "").toUpperCase();
-      if (!m1) return false; // enforce order
-      const c2 = token.char.toUpperCase();
-      return MONTHS.some((m) => m.startsWith(m1 + c2));
+      const m1 = slots[2].value ? slots[2].value.toUpperCase() : "";
+      if (!m1) return false; // Must have first letter
+      
+      const second = token.char.toUpperCase();
+      // Find all months that start with m1, then check if second letter is valid
+      const validMonths = MONTHS.filter(month => month.startsWith(m1));
+      return validMonths.some(month => month[1] === second);
     }
+    
+    // 5th position (third letter): Only allow letters that complete the month
     if (slotIndex === 4) {
-      const m1 = (slots[2].value || "").toUpperCase();
-      const m2 = (slots[3].value || "").toUpperCase();
-      if (!m1 || !m2) return false;
-      const c3 = token.char.toUpperCase();
-      return MONTHS.includes(m1 + m2 + c3);
+      const m1 = slots[2].value ? slots[2].value.toUpperCase() : "";
+      const m2 = slots[3].value ? slots[3].value.toUpperCase() : "";
+      if (!m1 || !m2) return false; // Must have first two letters
+      
+      const third = token.char.toUpperCase();
+      // Check if the complete month is valid
+      const completeMonth = m1 + m2 + third;
+      return MONTHS.includes(completeMonth);
     }
 
     // Year rules (<= 2999)
