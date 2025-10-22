@@ -1,16 +1,124 @@
-# React + Vite
+# Drag & Drop Date Picker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A unique React-based date picker where users drag and drop floating letters and numbers to form valid dates.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Drag & Drop Interface**: Drag floating tokens to drop slots
+- **Dynamic Validation**: Smart month validation with cascading rules
+- **Visual Feedback**: Shake animation on validation failures, green glow on completion
+- **Chaotic Animation**: Floating tokens with random movement
+- **Pure Black Theme**: Clean, minimal design
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** with hooks
+- **Vite** for build tooling
+- **Custom CSS** (no frameworks)
+- **SVG** favicon
 
-## Expanding the ESLint configuration
+## Local Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Vercel Deployment
+
+### Option 1: Deploy via Vercel CLI
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Follow the prompts:
+# - Link to existing project or create new
+# - Set project name
+# - Confirm build settings
+```
+
+### Option 2: Deploy via GitHub
+
+1. **Push to GitHub**:
+   ```bash
+   git add .
+   git commit -m "Ready for Vercel deployment"
+   git push origin main
+   ```
+
+2. **Connect to Vercel**:
+   - Go to [vercel.com](https://vercel.com)
+   - Click "New Project"
+   - Import your GitHub repository
+   - Vercel will auto-detect Vite settings
+
+### Option 3: Deploy via Vercel Dashboard
+
+1. **Zip the project**:
+   ```bash
+   cd my-react-app
+   zip -r ../date-picker-app.zip . -x node_modules/\*
+   ```
+
+2. **Upload to Vercel**:
+   - Go to [vercel.com](https://vercel.com)
+   - Click "New Project"
+   - Upload the zip file
+   - Deploy
+
+## Build Configuration
+
+The project includes a `vercel.json` configuration:
+
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "installCommand": "npm install"
+}
+```
+
+## Project Structure
+
+```
+my-react-app/
+├── src/
+│   ├── src/
+│   │   └── UselessDatePickerMinimal.jsx  # Main component
+│   ├── App.jsx                            # App wrapper
+│   ├── index.css                          # Custom styles
+│   └── main.jsx                           # Entry point
+├── public/
+│   └── favicon.svg                        # Custom favicon
+├── vercel.json                            # Vercel config
+└── package.json                           # Dependencies
+```
+
+## Build Output
+
+- **Total size**: ~206 kB (63 kB gzipped)
+- **CSS**: 5.45 kB (1.89 kB gzipped)
+- **JS**: 200.46 kB (63.12 kB gzipped)
+- **HTML**: 0.73 kB (0.41 kB gzipped)
+
+## Environment Variables
+
+No environment variables required for basic functionality.
+
+## Custom Domain
+
+After deployment, you can add a custom domain in the Vercel dashboard under Project Settings → Domains.
