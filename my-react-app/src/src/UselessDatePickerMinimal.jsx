@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 // Update: increase horizontal safe space for floating keys
 
 const DIGITS = "0123456789".split("");
-const LETTERS = "ABCDEFGHIJ".split("");
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 // Token and Slot type definitions removed for JavaScript compatibility
 
@@ -65,9 +65,6 @@ export default function UselessDatePickerMinimal() {
   const [tokens, setTokens] = useState(() => makeInitialTokens());
   const [slots, setSlots] = useState(() => makeSlots());
 
-  const day = useMemo(() => joinVals(slots.slice(0, 2)), [slots]);
-  const mon = useMemo(() => joinVals(slots.slice(2, 5)), [slots]);
-  const year = useMemo(() => joinVals(slots.slice(5, 9)), [slots]);
 
   function joinVals(ss) {
     return ss.map((s) => s.value ?? "_").join("");
@@ -198,8 +195,13 @@ export default function UselessDatePickerMinimal() {
 
     const target = slots[slotIndex];
     if (t.kind !== target.expect || !validateDrop(slotIndex, t)) {
-      e.currentTarget.classList.add("shake");
-      setTimeout(() => e.currentTarget.classList.remove("shake"), 500);
+      // Force animation restart with more reliable method
+      const element = e.currentTarget;
+      element.classList.remove("shake");
+      // Force a reflow to ensure the class removal is processed
+      element.offsetHeight;
+      element.classList.add("shake");
+      setTimeout(() => element.classList.remove("shake"), 500);
       bounceToken(id);
       return;
     }
@@ -212,6 +214,13 @@ export default function UselessDatePickerMinimal() {
       copy[slotIndex] = { ...copy[slotIndex], value: val };
       return copy;
     });
+
+    // Add magnification effect to the slot
+    const slotElement = document.querySelector(`[data-slot-id="${slots[slotIndex].id}"]`);
+    if (slotElement) {
+      slotElement.classList.add('magnify-success');
+      setTimeout(() => slotElement.classList.remove('magnify-success'), 600);
+    }
 
     setTokens((prev) => {
       const without = prev.filter((x) => x.id !== t.id);
@@ -276,13 +285,7 @@ export default function UselessDatePickerMinimal() {
         </button>
       </div>
 
-      <button
-        onClick={onReset}
-        className="fixed top-3 right-3 text-[10px] uppercase tracking-widest text-neutral-700 hover:text-neutral-400"
-        title="Reset"
-      >
-        Reset
-      </button>
+ 
 
       <style>{`
         .token { animation: float var(--dur, 10s) ease-in-out infinite; animation-delay: var(--delay, 0s); }
@@ -292,13 +295,6 @@ export default function UselessDatePickerMinimal() {
           50% { transform: translate(-6px, 8px) rotate(-1deg); }
           75% { transform: translate(6px, 4px) rotate(0.5deg); }
           100% { transform: translate(0, 0) rotate(0deg); }
-        }
-        .shake { animation: shake 0.45s cubic-bezier(.36,.07,.19,.97) both; }
-        @keyframes shake {
-          10%, 90% { transform: translateX(-1px); }
-          20%, 80% { transform: translateX(2px); }
-          30%, 50%, 70% { transform: translateX(-4px); }
-          40%, 60% { transform: translateX(4px); }
         }
         .bounce-back { animation: bounceBack 0.5s ease; }
         @keyframes bounceBack { 0% { transform: translateY(0) scale(1); } 40% { transform: translateY(-18px) scale(1.06); } 100% { transform: translateY(0) scale(1); } }
@@ -317,6 +313,7 @@ function Group({ cols, startIndex, onDropSlot, slots }) {
           <div key={s.id} className="flex flex-col items-center">
             <div
               className="drop-slot"
+              data-slot-id={s.id}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => onDropSlot(e, idx)}
               title={s.expect === "digit" ? "Drop a digit" : "Drop a letter"}

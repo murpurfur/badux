@@ -81,12 +81,46 @@
   pointer-events: none;
 }
 
-/* Individual floating token */
+/* Individual floating token with chaotic behaviors */
 .floating-token {
   position: absolute;
   pointer-events: auto;
   animation: float var(--dur, 10s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
+  transition: all 0.3s ease;
+  cursor: grab;
+}
+
+
+.floating-token:active {
+  cursor: grabbing;
+}
+
+
+/* Drop slot magnification on successful drop */
+.drop-slot.magnify-success {
+  animation: magnify-success 0.6s ease-out;
+}
+
+
+/* Magnification effect for successful drops */
+@keyframes magnify-success {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Floating animation */
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  15% { transform: translate(8px, -6px) rotate(1deg); }
+  30% { transform: translate(-6px, 10px) rotate(-1deg); }
+  45% { transform: translate(6px, 4px) rotate(0.5deg); }
+  60% { transform: translate(-4px, -8px) rotate(-1deg); }
+  75% { transform: translate(6px, 3px) rotate(0.5deg); }
+  90% { transform: translate(-3px, 6px) rotate(-0.5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 
 /* Drop slot styling with dashed border stroke */
@@ -102,6 +136,26 @@
   font-weight: 600;
   color: #e5e5e5;
   transition: all 0.2s ease;
+}
+
+/* Shake animation for validation failures */
+.shake {
+  animation: shake 0.45s cubic-bezier(.36,.07,.19,.97) both !important;
+  animation-iteration-count: 1 !important;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(-1px); }
+  20% { transform: translateX(2px); }
+  30% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  50% { transform: translateX(-4px); }
+  60% { transform: translateX(4px); }
+  70% { transform: translateX(-4px); }
+  80% { transform: translateX(2px); }
+  90% { transform: translateX(-1px); }
+  100% { transform: translateX(0); }
 }
 
 .drop-slot:hover {
