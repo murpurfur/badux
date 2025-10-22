@@ -69,6 +69,68 @@
   color: #ffffff;
   position: relative;
   user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Content container */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  z-index: 10;
+  position: relative;
+}
+
+/* Date header */
+.date-header {
+  color: #ffffff;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 800;
+  font-stretch: condensed;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* Input groups container */
+.input-groups {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Reset button */
+.reset-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid #262626;
+  background-color: #171717;
+  color: #d4d4d4;
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.reset-button:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.reset-button:focus {
+  outline: none;
+  border-color: #262626;
+}
+
+.reset-button:active {
+  outline: none;
+  border-color: #262626;
+  background-color: #1f1f1f;
 }
 
 /* Floating tokens container */
@@ -136,6 +198,19 @@
   font-weight: 600;
   color: #e5e5e5;
   transition: all 0.2s ease;
+}
+
+/* All slots filled state */
+.drop-slot.all-filled {
+  border: 1px solid #00ff00;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), 0 0 20px rgba(255, 255, 0, 0.2), 0 0 30px rgba(0, 255, 0, 0.1);
+  animation: pulse-success 2s ease-in-out infinite;
+}
+
+@keyframes pulse-success {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 /* Shake animation for validation failures */

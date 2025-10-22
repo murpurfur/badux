@@ -3,8 +3,8 @@ import React, { useMemo, useState } from "react";
 // Bad UX: Minimal, blacked-out, drag-into-slots chaos
 // Update: increase horizontal safe space for floating keys
 
-const DIGITS = "0123456789".split("");
-const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const DIGITS = "0011122234567899".split("");
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZJFMASONDAEPUCONBRYLGPTVC".split("");
 
 // Token and Slot type definitions removed for JavaScript compatibility
 
@@ -38,7 +38,7 @@ function makeInitialTokens() {
     });
   };
 
-  for (let set = 0; set < 10; set++) {
+  for (let set = 0; set < 20; set++) {
     for (const d of DIGITS) pushToken("digit", d, set);
   }
   for (let set = 0; set < 10; set++) {
@@ -64,6 +64,15 @@ function makeSlots() {
 export default function UselessDatePickerMinimal() {
   const [tokens, setTokens] = useState(() => makeInitialTokens());
   const [slots, setSlots] = useState(() => makeSlots());
+
+  const day = useMemo(() => joinVals(slots.slice(0, 2)), [slots]);
+  const mon = useMemo(() => joinVals(slots.slice(2, 5)), [slots]);
+  const year = useMemo(() => joinVals(slots.slice(5, 9)), [slots]);
+
+  // Check if all slots are filled
+  const allSlotsFilled = useMemo(() => {
+    return slots.every(slot => slot.value && slot.value !== "_");
+  }, [slots]);
 
 
   function joinVals(ss) {
@@ -263,27 +272,26 @@ export default function UselessDatePickerMinimal() {
         ))}
       </div>
 
-      <div className="min-h-screen w-full grid place-items-center">
-        <div className="flex items-center gap-6">
-          <Group label="" cols={2} startIndex={0} onDropSlot={onDropSlot} slots={slots} />
-          <Group label="" cols={3} startIndex={2} onDropSlot={onDropSlot} slots={slots} />
-          <Group label="" cols={4} startIndex={5} onDropSlot={onDropSlot} slots={slots} />
+      <div className="content-container">
+        <h1 className="date-header">Pick a date</h1>
+        <div className="input-groups">
+            <Group label="" cols={2} startIndex={0} onDropSlot={onDropSlot} slots={slots} allSlotsFilled={allSlotsFilled} />
+            <Group label="" cols={3} startIndex={2} onDropSlot={onDropSlot} slots={slots} allSlotsFilled={allSlotsFilled} />
+            <Group label="" cols={4} startIndex={5} onDropSlot={onDropSlot} slots={slots} allSlotsFilled={allSlotsFilled} />
         </div>
+        <button
+          onClick={onReset}
+          className="reset-button"
+          title="Reset"
+        >
+          Reset
+        </button>
       </div>
 
       {/* <div className="fixed bottom-3 left-1/2 -translate-x-1/2 text-neutral-700 font-mono text-xs tracking-widest">
         {day} {mon} {year}
       </div> */}
 
-      <div className="fixed top-3 left-1/2 -translate-x-1/2">
-        <button
-          onClick={onReset}
-          className="px-3 py-1 rounded-md border border-neutral-800 bg-neutral-900 text-neutral-300 text-xs tracking-widest hover:text-white"
-          title="Reset"
-        >
-          Reset
-        </button>
-      </div>
 
  
 
@@ -303,7 +311,7 @@ export default function UselessDatePickerMinimal() {
   );
 }
 
-function Group({ cols, startIndex, onDropSlot, slots }) {
+function Group({ cols, startIndex, onDropSlot, slots, allSlotsFilled }) {
   return (
     <div className="flex items-center gap-2">
       {Array.from({ length: cols }).map((_, i) => {
@@ -312,7 +320,7 @@ function Group({ cols, startIndex, onDropSlot, slots }) {
         return (
           <div key={s.id} className="flex flex-col items-center">
             <div
-              className="drop-slot"
+              className={`drop-slot ${allSlotsFilled ? 'all-filled' : ''}`}
               data-slot-id={s.id}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => onDropSlot(e, idx)}
