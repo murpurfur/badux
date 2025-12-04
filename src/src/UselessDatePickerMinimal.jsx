@@ -342,9 +342,12 @@ export default function UselessDatePickerMinimal() {
       if (top > 105) top = 105;
       if (left < -5) left = -5;
       if (left > 105) left = 105;
+      
+      const dur = 4 + Math.random() * 16;
+      const delay = -Math.random() * dur;
       return [
         ...without,
-        { id: `${kind}-${prevVal}-${Math.random().toString(36).slice(2, 6)}`, char: prevVal, kind, top, left, dur: 4 + Math.random() * 16, delay: -Math.random() * (4 + Math.random() * 16) },
+        { id: `${kind}-${prevVal}-${Math.random().toString(36).slice(2, 6)}`, char: prevVal, kind, top, left, dur, delay },
       ];
     });
   }
