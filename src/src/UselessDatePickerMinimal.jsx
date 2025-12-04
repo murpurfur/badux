@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 // Bad UX: Minimal, blacked-out, drag-into-slots chaos
 // Update: increase horizontal safe space for floating keys
 
-const DIGITS = "0011122234567899".split("");
+const DIGITS = "000111222333444555666777888999".split("");
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZJFMASONDAEPUCONBRYLGPTVC".split("");
 
 // Token and Slot type definitions removed for JavaScript compatibility
@@ -11,39 +11,112 @@ const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZJFMASONDAEPUCONBRYLGPTVC".split("");
 function makeInitialTokens() {
   const src = [];
 
-  // Increase horizontal safe area around center region
+  // Ultra-dense grid configuration - buttons overlap slightly to fill all space
+  // Key size is approximately 3rem = 48px, using percentage-based spacing
+  const KEY_SIZE_PERCENT = 3.0; // Smaller to allow more buttons
+  const KEY_SPACING_PERCENT = -0.4; // More negative spacing for tighter overlap
+  const TOTAL_KEY_SIZE = KEY_SIZE_PERCENT + KEY_SPACING_PERCENT;
+  
+  // Exclusion zone only for input area (under the date picker)
   const isInsideExcluded = (top, left) => {
-    // Exclude wider horizontally (like 30% to 70%) and vertically moderate (35% to 65%)
-    return top > 35 && top < 65 && left > 30 && left < 70;
+    // Exclude area under input: vertically 35% to 65%, horizontally 30% to 70%
+    return top > 44 && top < 50 && left > 30 && left < 70;
   };
 
-  const pushToken = (kind, char, set) => {
-    let top = 0,
-      left = 0;
-    do {
-      top = Math.random() * 95;
-      left = Math.random() * 95;
-    } while (isInsideExcluded(top, left));
+  // Collect all tokens first
+  const allTokens = [];
+  for (let set = 0; set < 30; set++) {
+    for (const d of DIGITS) {
+      allTokens.push({ kind: "digit", char: d, set });
+    }
+  }
+  for (let set = 0; set < 10; set++) {
+    for (const l of LETTERS) {
+      allTokens.push({ kind: "letter", char: l, set });
+    }
+  }
 
-    const dur = 6 + Math.random() * 12;
+  // Create ultra-dense grid positions - fill every possible space
+  const positions = [];
+  const colsPerRow = Math.ceil(100 / TOTAL_KEY_SIZE) + 2; // Extra columns to ensure coverage
+  const rowsCount = Math.ceil(100 / TOTAL_KEY_SIZE) + 2; // Extra rows to ensure coverage
+  
+  // Generate positions covering entire screen, including edges
+  for (let row = -1; row <= rowsCount; row++) {
+    for (let col = -1; col <= colsPerRow; col++) {
+      const top = row * TOTAL_KEY_SIZE;
+      const left = col * TOTAL_KEY_SIZE;
+      
+      // Only add positions outside excluded area and within reasonable bounds
+      if (!isInsideExcluded(top, left) && top >= -5 && top <= 105 && left >= -5 && left <= 105) {
+        positions.push({ top, left });
+      }
+    }
+  }
+  
+  // Add extra positions around edges and corners to ensure complete coverage
+  for (let i = 0; i < 100; i++) {
+    const edge = Math.floor(Math.random() * 4);
+    let top, left;
+    switch(edge) {
+      case 0: // Top edge
+        top = Math.random() * 10;
+        left = Math.random() * 100;
+        break;
+      case 1: // Right edge
+        top = Math.random() * 100;
+        left = 90 + Math.random() * 10;
+        break;
+      case 2: // Bottom edge
+        top = 90 + Math.random() * 10;
+        left = Math.random() * 100;
+        break;
+      case 3: // Left edge
+        top = Math.random() * 100;
+        left = Math.random() * 10;
+        break;
+    }
+    if (!isInsideExcluded(top, left)) {
+      positions.push({ top, left });
+    }
+  }
+  
+  // Shuffle positions for randomness
+  for (let i = positions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [positions[i], positions[j]] = [positions[j], positions[i]];
+  }
+
+  // Assign tokens to positions, reusing positions if we have more tokens than positions
+  allTokens.forEach((token, index) => {
+    const pos = positions[index % positions.length];
+    
+    let { top, left } = pos;
+    
+    // Ensure position is not in excluded area
+    if (isInsideExcluded(top, left)) {
+      // Push to nearest edge of excluded zone
+      if (top >= 35 && top <= 65) {
+        top = top < 50 ? 30 : 70;
+      }
+      if (left >= 30 && left <= 70) {
+        left = left < 50 ? 25 : 75;
+      }
+    }
+
+    const dur = 4 + Math.random() * 16;
     const delay = -Math.random() * dur;
     src.push({
-      id: `${kind}-${char}-set${set}-${Math.random().toString(36).slice(2, 6)}`,
-      char,
-      kind,
+      id: `${token.kind}-${token.char}-set${token.set}-${Math.random().toString(36).slice(2, 6)}`,
+      char: token.char,
+      kind: token.kind,
       top,
       left,
       dur,
       delay,
     });
-  };
+  });
 
-  for (let set = 0; set < 20; set++) {
-    for (const d of DIGITS) pushToken("digit", d, set);
-  }
-  for (let set = 0; set < 10; set++) {
-    for (const l of LETTERS) pushToken("letter", l, set);
-  }
   return src;
 }
 
@@ -235,12 +308,43 @@ export default function UselessDatePickerMinimal() {
       const without = prev.filter((x) => x.id !== t.id);
       if (!prevVal) return without;
       const kind = /[0-9]/.test(prevVal) ? "digit" : "letter";
-      // respawn previous outside safe zone
+      // respawn in ultra-dense grid, avoiding input area
+      const KEY_SIZE_PERCENT = 3.0;
+      const KEY_SPACING_PERCENT = -0.4;
+      const TOTAL_KEY_SIZE = KEY_SIZE_PERCENT + KEY_SPACING_PERCENT;
+      
+      // Find a random position in the dense grid
+      const colsPerRow = Math.ceil(100 / TOTAL_KEY_SIZE) + 2;
+      const rowsCount = Math.ceil(100 / TOTAL_KEY_SIZE) + 2;
+      
       let top = 0, left = 0;
-      do { top = Math.random() * 95; left = Math.random() * 95; } while (left > 30 && left < 70 && top > 35 && top < 65);
+      let attempts = 0;
+      do {
+        const row = Math.floor(Math.random() * (rowsCount + 2)) - 1;
+        const col = Math.floor(Math.random() * (colsPerRow + 2)) - 1;
+        top = row * TOTAL_KEY_SIZE;
+        left = col * TOTAL_KEY_SIZE;
+        attempts++;
+      } while ((top > 35 && top < 65 && left > 30 && left < 70) && attempts < 100);
+      
+      // If still in excluded area, push to edge
+      if (top > 35 && top < 65 && left > 30 && left < 70) {
+        if (top >= 35 && top <= 65) {
+          top = top < 50 ? 30 : 70;
+        }
+        if (left >= 30 && left <= 70) {
+          left = left < 50 ? 25 : 75;
+        }
+      }
+      
+      // Ensure position is within bounds
+      if (top < -5) top = -5;
+      if (top > 105) top = 105;
+      if (left < -5) left = -5;
+      if (left > 105) left = 105;
       return [
         ...without,
-        { id: `${kind}-${prevVal}-${Math.random().toString(36).slice(2, 6)}`, char: prevVal, kind, top, left, dur: 10, delay: 0 },
+        { id: `${kind}-${prevVal}-${Math.random().toString(36).slice(2, 6)}`, char: prevVal, kind, top, left, dur: 4 + Math.random() * 16, delay: -Math.random() * (4 + Math.random() * 16) },
       ];
     });
   }
